@@ -783,7 +783,9 @@
                 configMINIMAL_STACK_SIZE,      /* Task's stack size, in words (not bytes!). */
                 NULL,                          /* Parameter to pass into the task. */
                 uxTaskPriorityGet( NULL ) + 1, /* The priority of the task. */
-                &xCreatedTask );               /* Handle of the task being created. */
+                &xCreatedTask,                 /* Handle of the task being created. */
+                1,
+                1 );
 
             if( eTaskGetState( xCreatedTask ) != eSuspended )
             {

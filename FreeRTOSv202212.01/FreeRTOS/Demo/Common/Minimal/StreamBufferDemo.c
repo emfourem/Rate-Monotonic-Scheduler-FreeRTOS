@@ -187,29 +187,29 @@ void vStartStreamBufferTasks( void )
     /* The echo servers sets up the stream buffers before creating the echo
      * client tasks.  One set of tasks has the server as the higher priority, and
      * the other has the client as the higher priority. */
-    xTaskCreate( prvEchoServer, "1StrEchoServer", sbSMALLER_STACK_SIZE, NULL, sbHIGHER_PRIORITY, NULL );
-    xTaskCreate( prvEchoServer, "2StrEchoServer", sbSMALLER_STACK_SIZE, NULL, sbLOWER_PRIORITY, NULL );
+    xTaskCreate( prvEchoServer, "1StrEchoServer", sbSMALLER_STACK_SIZE, NULL, sbHIGHER_PRIORITY, NULL, 1, 1 );
+    xTaskCreate( prvEchoServer, "2StrEchoServer", sbSMALLER_STACK_SIZE, NULL, sbLOWER_PRIORITY, NULL, 1, 1 );
 
     /* The non blocking tasks run continuously and will interleave with each
      * other, so must be created at the lowest priority.  The stream buffer they
      * use is created and passed in using the task's parameter. */
     xStreamBuffer = xStreamBufferCreate( sbSTREAM_BUFFER_LENGTH_BYTES, sbTRIGGER_LEVEL_1 );
-    xTaskCreate( prvNonBlockingReceiverTask, "StrNonBlkRx", configMINIMAL_STACK_SIZE, ( void * ) xStreamBuffer, tskIDLE_PRIORITY, NULL );
-    xTaskCreate( prvNonBlockingSenderTask, "StrNonBlkTx", configMINIMAL_STACK_SIZE, ( void * ) xStreamBuffer, tskIDLE_PRIORITY, NULL );
+    xTaskCreate( prvNonBlockingReceiverTask, "StrNonBlkRx", configMINIMAL_STACK_SIZE, ( void * ) xStreamBuffer, tskIDLE_PRIORITY, NULL, 1, 1 );
+    xTaskCreate( prvNonBlockingSenderTask, "StrNonBlkTx", configMINIMAL_STACK_SIZE, ( void * ) xStreamBuffer, tskIDLE_PRIORITY, NULL, 1, 1 );
 
     /* The task that receives bytes from an interrupt to test that it unblocks
      * at a specific trigger level must run at a high priority to minimise the risk
      * of it receiving more characters before it can execute again after being
      * unblocked. */
-    xTaskCreate( prvInterruptTriggerLevelTest, "StrTrig", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL );
+    xTaskCreate( prvInterruptTriggerLevelTest, "StrTrig", configMINIMAL_STACK_SIZE, NULL, configMAX_PRIORITIES - 1, NULL, 1, 1 );
 
     #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
     {
         /* The sender tasks set up the stream buffers before creating the
          * receiver tasks.  Priorities must be 0 and 1 as the priority is used to
          * index into the xStaticStreamBuffers and ucBufferStorage arrays. */
-        xTaskCreate( prvSenderTask, "Str1Sender", sbSMALLER_STACK_SIZE, NULL, sbHIGHER_PRIORITY, NULL );
-        xTaskCreate( prvSenderTask, "Str2Sender", sbSMALLER_STACK_SIZE, NULL, sbLOWER_PRIORITY, NULL );
+        xTaskCreate( prvSenderTask, "Str1Sender", sbSMALLER_STACK_SIZE, NULL, sbHIGHER_PRIORITY, NULL, 1, 1 );
+        xTaskCreate( prvSenderTask, "Str2Sender", sbSMALLER_STACK_SIZE, NULL, sbLOWER_PRIORITY, NULL, 1, 1 );
     }
     #endif /* configSUPPORT_STATIC_ALLOCATION */
 }
@@ -724,11 +724,11 @@ static void prvNonBlockingReceiverTask( void * pvParameters )
             /* Here prvSingleTaskTests() performs various tests on a stream buffer
              * that was created statically. */
             prvSingleTaskTests( xStreamBuffer );
-            xTaskCreate( prvReceiverTask, "StrReceiver", sbSMALLER_STACK_SIZE, ( void * ) xStreamBuffer, sbHIGHER_PRIORITY, NULL );
+            xTaskCreate( prvReceiverTask, "StrReceiver", sbSMALLER_STACK_SIZE, ( void * ) xStreamBuffer, sbHIGHER_PRIORITY, NULL, 1, 1 );
         }
         else
         {
-            xTaskCreate( prvReceiverTask, "StrReceiver", sbSMALLER_STACK_SIZE, ( void * ) xStreamBuffer, sbLOWER_PRIORITY, NULL );
+            xTaskCreate( prvReceiverTask, "StrReceiver", sbSMALLER_STACK_SIZE, ( void * ) xStreamBuffer, sbLOWER_PRIORITY, NULL, 1, 1 );
         }
 
         for( ; ; )
@@ -979,14 +979,14 @@ static void prvEchoServer( void * pvParameters )
      * priority then the client task is created at the higher priority. */
     if( uxTaskPriorityGet( NULL ) == sbLOWER_PRIORITY )
     {
-        xTaskCreate( prvEchoClient, "EchoClient", sbSMALLER_STACK_SIZE, ( void * ) &xStreamBuffers, sbHIGHER_PRIORITY, NULL );
+        xTaskCreate( prvEchoClient, "EchoClient", sbSMALLER_STACK_SIZE, ( void * ) &xStreamBuffers, sbHIGHER_PRIORITY, NULL, 1, 1 );
     }
     else
     {
         /* Here prvSingleTaskTests() performs various tests on a stream buffer
          * that was created dynamically. */
         prvSingleTaskTests( xStreamBuffers.xEchoClientBuffer );
-        xTaskCreate( prvEchoClient, "EchoClient", sbSMALLER_STACK_SIZE, ( void * ) &xStreamBuffers, sbLOWER_PRIORITY, NULL );
+        xTaskCreate( prvEchoClient, "EchoClient", sbSMALLER_STACK_SIZE, ( void * ) &xStreamBuffers, sbLOWER_PRIORITY, NULL, 1, 1 );
     }
 
     for( ; ; )

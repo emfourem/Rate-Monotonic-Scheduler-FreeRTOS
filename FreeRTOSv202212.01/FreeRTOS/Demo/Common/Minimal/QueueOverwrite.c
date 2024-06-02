@@ -70,7 +70,7 @@ void vStartQueueOverwriteTask( UBaseType_t uxPriority )
 
     /* Create the test task.  The queue used by the test task is created inside
      * the task itself. */
-    xTaskCreate( prvQueueOverwriteTask, "QOver", configMINIMAL_STACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL );
+    xTaskCreate( prvQueueOverwriteTask, "QOver", configMINIMAL_STACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
 }
 /*-----------------------------------------------------------*/
 

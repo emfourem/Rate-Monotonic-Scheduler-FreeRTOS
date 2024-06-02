@@ -42,6 +42,8 @@
 #define configUSE_TRACE_FACILITY 0
 #define configGENERATE_RUN_TIME_STATS 0
 
+#define configUSE_PRIORITY_BURST 		1
+
 #define configUSE_TICKLESS_IDLE         0
 #define configUSE_PREEMPTION			1
 #define configUSE_IDLE_HOOK				0
@@ -60,7 +62,7 @@
 #define configUSE_QUEUE_SETS			1
 #define configUSE_COUNTING_SEMAPHORES	1
 
-#define configMAX_PRIORITIES			( 9UL )
+#define configMAX_PRIORITIES			( 15UL )
 #define configQUEUE_REGISTRY_SIZE		10
 #define configSUPPORT_STATIC_ALLOCATION	1
 

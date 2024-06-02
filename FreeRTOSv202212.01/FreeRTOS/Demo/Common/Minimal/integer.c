@@ -71,7 +71,7 @@ void vStartIntegerMathTasks( UBaseType_t uxPriority )
 
     for( sTask = 0; sTask < intgNUMBER_OF_TASKS; sTask++ )
     {
-        xTaskCreate( vCompeteingIntMathTask, "IntMath", intgSTACK_SIZE, ( void * ) &( xTaskCheck[ sTask ] ), uxPriority, ( TaskHandle_t * ) NULL );
+        xTaskCreate( vCompeteingIntMathTask, "IntMath", intgSTACK_SIZE, ( void * ) &( xTaskCheck[ sTask ] ), uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
     }
 }
 /*-----------------------------------------------------------*/

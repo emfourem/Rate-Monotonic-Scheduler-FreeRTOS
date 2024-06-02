@@ -76,8 +76,8 @@ DEMO_PROJECT = $(DEMO_ROOT)/CORTEX_MPS2_QEMU_IAR_GCC
 VPATH += $(DEMO_PROJECT)
 INCLUDE_DIRS += -I$(DEMO_PROJECT) -I$(DEMO_PROJECT)/CMSIS
 SOURCE_FILES += (DEMO_PROJECT)/main.c
-SOURCE_FILES += (DEMO_PROJECT)/main_blinky.c
-SOURCE_FILES += (DEMO_PROJECT)/main_full.c
+#SOURCE_FILES += (DEMO_PROJECT)/main_blinky.c
+#SOURCE_FILES += (DEMO_PROJECT)/main_full.c
 SOURCE_FILES += ./startup_gcc.c
 # Lightweight print formatting to use in place of the heavier GCC equivalent.
 SOURCE_FILES += ./printf-stdarg.c

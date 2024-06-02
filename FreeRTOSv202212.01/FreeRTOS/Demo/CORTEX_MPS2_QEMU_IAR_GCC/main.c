@@ -75,49 +75,187 @@ required UART registers. */
 #define UART0_BAUDDIV	( * ( ( ( volatile uint32_t * )( UART0_ADDRESS + 16UL ) ) ) )
 #define TX_BUFFER_MASK	( 1UL )
 
-/*
- * main_blinky() is used when mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is set to 1.
- * main_full() is used when mainCREATE_SIMPLE_BLINKY_DEMO_ONLY is set to 0.
- */
-extern void main_blinky( void );
-extern void main_full( void );
+// Standard includes
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-/*
- * Only the comprehensive demo uses application hook (callback) functions.  See
- * https://www.FreeRTOS.org/a00016.html for more information.
- */
-void vFullDemoTickHookFunction( void );
-void vFullDemoIdleFunction( void );
+// FreeRTOS includes
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+#include "timers.h"
 
-/*
- * Printf() output is sent to the serial port.  Initialise the serial hardware.
- */
-static void prvUARTInit( void );
 
-/*-----------------------------------------------------------*/
+/*********************************************************************************************************
+*												MACROS
+*********************************************************************************************************/
+#define mainCREATE_SIMPLE_BLINKY_DEMO_ONLY	1
 
-void main( void )
+#define mainDELAY_LOOP_COUNT 100
+#define ROUND_ROBIN_TIME_SLICE 1000 	// Time slice for round-robin scheduling.
+
+/* Priority levels for tasks.
+	Note that: low priority numbers denote low priority tasks. */
+#define TASK_PRIORITY 4
+
+/* The period of each task. The times are converted from
+milliseconds to ticks using the pdMS_TO_TICKS() macro. */
+#define mainTASK_FREQUENCY1_MS			pdMS_TO_TICKS( 20000UL )
+#define mainTASK_FREQUENCY2_MS			pdMS_TO_TICKS( 20000UL )
+#define mainTASK_FREQUENCY3_MS			pdMS_TO_TICKS( 20000UL )
+#define mainTIMER_FREQUENCY_MS			pdMS_TO_TICKS( 1200000UL ) 
+
+/* Dimensions of the buffer that the task being created will use as its stack.
+	NOTE:  This is the number of words the stack will hold, not the number of bytes.
+	For example, if each stack item is 32-bits, and this is set to 100, then 400 bytes (100 * 32-bits) will be allocated. */
+#define STACK_SIZE 200
+
+
+/*********************************************************************************************************
+*										UART: printf handling
+*********************************************************************************************************/
+//printf() output uses the UART.  These constants define the addresses of the required UART registers.
+#define UART0_ADDRESS 	( 0x40004000UL )												// Base address of the UART peripheral
+#define UART0_DATA		( * ( ( ( volatile uint32_t * )( UART0_ADDRESS + 0UL ) ) ) )	// Register to write data to for transmission
+#define UART0_STATE		( * ( ( ( volatile uint32_t * )( UART0_ADDRESS + 4UL ) ) ) )	// Register that holds the status of the UART
+#define UART0_CTRL		( * ( ( ( volatile uint32_t * )( UART0_ADDRESS + 8UL ) ) ) )	// Control register for configuring the UART
+#define UART0_BAUDDIV	( * ( ( ( volatile uint32_t * )( UART0_ADDRESS + 16UL ) ) ) )	// Register for configuring the baud rate
+#define TX_BUFFER_MASK	( 1UL )															// Constant used for masking the transmission buffer
+
+// Initialization function to set up the UART peripheral => Printf() output is sent to the serial port
+static void prvUARTInit(void);
+
+
+/*********************************************************************************************************
+*										  APPLICATION GLOBALS
+*********************************************************************************************************/
+/* For tasks, a task handle is essentially a reference to a specific task.
+	For example after the task creation, you can use the task's handle to delete the task (vTaskDelete(xHandle)). */
+TaskHandle_t xHandle_1 = NULL;
+TaskHandle_t xHandle_2 = NULL;
+TaskHandle_t xHandle_3 = NULL;
+
+/* Define the strings that will be passed as the task parameters.
+	These are defined as const and not on the stack to ensure they remain valid when the tasks are executing. */
+static const char *paramTask1 = "Task 1 is running\r\n";
+static const char *paramTask2 = "Task 2 is running\r\n";
+static const char *paramTask3 = "Task 3 is running\r\n";
+
+
+/*********************************************************************************************************
+*									   LOCAL FUNCTION PROTOTYPES
+*********************************************************************************************************/
+// Function prototypes for task functions and timer callback
+static void vTask1(void *);
+static void vTask2(void *);
+static void vTask3(void *);
+
+
+/**********************************************************************************************************
+*												main()
+*********************************************************************************************************/
+void main(void)
 {
-	/* See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
-	instructions. */
+    prvUARTInit();
 
-	/* Hardware initialisation.  printf() output uses the UART for IO. */
-	prvUARTInit();
+    BaseType_t xReturned_1, xReturned_2, xReturned_3;
 
-	/* The mainCREATE_SIMPLE_BLINKY_DEMO_ONLY setting is described at the top
-	of this file. */
-	#if ( mainCREATE_SIMPLE_BLINKY_DEMO_ONLY == 1 )
+
+	// Task creation
+	xReturned_1 = xTaskCreate(	vTask1, 				// Pointer to the task entry function (name of function)
+								"vTask1", 				// Name for the task
+								STACK_SIZE, 			// The number of words (not bytes!) to allocate for use as the task's stack
+            					(void *)paramTask1,   	// A value that is passed as the paramater to the created task
+								TASK_PRIORITY, 		    // Priority at which the task is created
+            					&xHandle_1,				// Used to pass out the created task's handle
+								10,						// Estimation of task's CPU Burst
+								5);					    // Urgency of the task to get the CPU to execute
+
+	xReturned_2 = xTaskCreate(vTask2, "vTask2", STACK_SIZE, (void *)paramTask2, TASK_PRIORITY, &xHandle_2, 9, 4);
+	xReturned_3 = xTaskCreate(vTask3, "vTask3", STACK_SIZE, (void *)paramTask3, TASK_PRIORITY, &xHandle_3, 11, 7);
+
+	if (xReturned_1 == pdPASS && xReturned_2 == pdPASS && xReturned_3 == pdPASS)
+		vTaskStartScheduler();
+
+	else
+		printf("Error creating tasks. Code 1: %ld, Code 2: %ld, Code 3: %ld \r\n", xReturned_1, xReturned_2, xReturned_3);
+
+    for (;;);
+}
+
+
+/**********************************************************************************************************
+*											Task Functions
+*********************************************************************************************************/
+void vTask1(void *pvParameters)
+{
+    TickType_t xNextWakeTime;
+	const TickType_t xBlockTime = mainTASK_FREQUENCY1_MS;
+	const char* pcTaskName;
+	pcTaskName = (char *)pvParameters;
+	/* Initialise xNextWakeTime - this only needs to be done once. */
+	xNextWakeTime = xTaskGetTickCount();
+
+	for( ;; )
 	{
-		main_blinky();
+        printf("This is %s \n", pcTaskName);
+		/* Place this task in the blocked state until it is time to run again.
+		The block time is specified in ticks, pdMS_TO_TICKS() was used to
+		convert a time specified in milliseconds into a time specified in ticks.
+		While in the Blocked state this task will not consume any CPU time. */
+		vTaskDelayUntil( &xNextWakeTime, xBlockTime );
 	}
-	#else
-	{
-		main_full();
-	}
-	#endif
 }
 /*-----------------------------------------------------------*/
 
+void vTask2(void *pvParameters)
+{
+    TickType_t xNextWakeTime;
+	const TickType_t xBlockTime = mainTASK_FREQUENCY2_MS;
+	const char* pcTaskName;
+	pcTaskName = (char *)pvParameters;
+	/* Initialise xNextWakeTime - this only needs to be done once. */
+	xNextWakeTime = xTaskGetTickCount();
+
+	for( ;; )
+	{
+        printf("This is %s \n", pcTaskName);
+
+		vTaskDelay( pdMS_TO_TICKS( 30000UL ) );
+		/* Place this task in the blocked state until it is time to run again.
+		The block time is specified in ticks, pdMS_TO_TICKS() was used to
+		convert a time specified in milliseconds into a time specified in ticks.
+		While in the Blocked state this task will not consume any CPU time. */
+		vTaskDelayUntil( &xNextWakeTime, xBlockTime );
+	}
+}
+/*-----------------------------------------------------------*/
+
+void vTask3(void *pvParameters)
+{
+    TickType_t xNextWakeTime;
+	const TickType_t xBlockTime = mainTASK_FREQUENCY3_MS;
+	const char* pcTaskName;
+	pcTaskName = (char *)pvParameters;
+	/* Initialise xNextWakeTime - this only needs to be done once. */
+	xNextWakeTime = xTaskGetTickCount();
+
+	for( ;; )
+	{
+        printf("This is %s \n", pcTaskName);
+		/* Place this task in the blocked state until it is time to run again.
+		The block time is specified in ticks, pdMS_TO_TICKS() was used to
+		convert a time specified in milliseconds into a time specified in ticks.
+		While in the Blocked state this task will not consume any CPU time. */
+		vTaskDelayUntil( &xNextWakeTime, xBlockTime );
+	}
+}
+
+
+/**********************************************************************************************************
+*											Already defined Functions
+*********************************************************************************************************/
 void vApplicationMallocFailedHook( void )
 {
 	/* vApplicationMallocFailedHook() will only be called if
@@ -297,13 +435,12 @@ int __write( int iFile, char *pcString, int iStringLength )
 void *malloc( size_t size )
 {
 	( void ) size;
+	return pvPortMalloc(size);
 
 	/* This project uses heap_4 so doesn't set up a heap for use by the C
 	library - but something is calling the C library malloc().  See
 	https://freertos.org/a00111.html for more information. */
-	printf( "\r\n\r\nUnexpected call to malloc() - should be usine pvPortMalloc()\r\n" );
-	portDISABLE_INTERRUPTS();
-	for( ;; );
-
+	// printf( "\r\n\r\nUnexpected call to malloc() - should be usine pvPortMalloc()\r\n" );
+	// portDISABLE_INTERRUPTS();
+	// for( ;; );
 }
-

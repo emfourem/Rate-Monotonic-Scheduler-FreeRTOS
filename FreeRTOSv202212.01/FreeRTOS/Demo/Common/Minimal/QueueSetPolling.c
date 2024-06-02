@@ -95,7 +95,7 @@
             xQueueAddToSet( xQueue, xQueueSet );
 
             /* Create the task. */
-            xTaskCreate( prvQueueSetReceivingTask, "SetPoll", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL );
+            xTaskCreate( prvQueueSetReceivingTask, "SetPoll", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL, 1, 1 );
         }
     }
 /*-----------------------------------------------------------*/

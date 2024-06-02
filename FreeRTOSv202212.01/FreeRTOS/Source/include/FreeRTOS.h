@@ -1301,6 +1301,10 @@ typedef struct xSTATIC_TCB
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iDummy22;
     #endif
+    #if (configUSE_PRIORITY_BURST == 1)
+        int CpuBurst;
+        int urgency;
+    #endif
 } StaticTask_t;
 
 /*

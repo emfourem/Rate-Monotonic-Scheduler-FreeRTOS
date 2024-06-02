@@ -86,7 +86,7 @@ TaskHandle_t xCreatedTask;
 
 void vCreateSuicidalTasks( UBaseType_t uxPriority )
 {
-    xTaskCreate( vCreateTasks, "CREATOR", deathSTACK_SIZE, ( void * ) NULL, uxPriority, NULL );
+    xTaskCreate( vCreateTasks, "CREATOR", deathSTACK_SIZE, ( void * ) NULL, uxPriority, NULL, 1, 1 );
 }
 /*-----------------------------------------------------------*/
 
@@ -156,8 +156,8 @@ static portTASK_FUNCTION( vCreateTasks, pvParameters )
 
         xCreatedTask = NULL;
 
-        xTaskCreate( vSuicidalTask, "SUICID1", configMINIMAL_STACK_SIZE, NULL, uxPriority, &xCreatedTask );
-        xTaskCreate( vSuicidalTask, "SUICID2", configMINIMAL_STACK_SIZE, &xCreatedTask, uxPriority, NULL );
+        xTaskCreate( vSuicidalTask, "SUICID1", configMINIMAL_STACK_SIZE, NULL, uxPriority, &xCreatedTask, 1, 1 );
+        xTaskCreate( vSuicidalTask, "SUICID2", configMINIMAL_STACK_SIZE, &xCreatedTask, uxPriority, NULL, 1, 1 );
 
         ++usCreationCount;
     }

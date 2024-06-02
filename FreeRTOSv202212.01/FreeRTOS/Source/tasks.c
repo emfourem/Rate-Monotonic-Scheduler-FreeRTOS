@@ -169,15 +169,41 @@
 
 /*-----------------------------------------------------------*/
 
-    #define taskSELECT_HIGHEST_PRIORITY_TASK()                                                  \
+
+#define taskSELECT_TASK_PriorityBurst()                                                         \
     {                                                                                           \
-        UBaseType_t uxTopPriority;                                                              \
+    UBaseType_t uxTopPriority = uxTopReadyPriority;                                             \
+    long int overallPriority = -1; /* Initialize to a value lower than the minimum possible */  \
+    long int tempOverallPriority = 0;                                                           \
+    ListItem_t* highestPriorityBurst = NULL;                                                    \
                                                                                                 \
-        /* Find the highest priority list that contains ready tasks. */                         \
-        portGET_HIGHEST_PRIORITY( uxTopPriority, uxTopReadyPriority );                          \
-        configASSERT( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ uxTopPriority ] ) ) > 0 ); \
-        listGET_OWNER_OF_NEXT_ENTRY( pxCurrentTCB, &( pxReadyTasksLists[ uxTopPriority ] ) );   \
-    } /* taskSELECT_HIGHEST_PRIORITY_TASK() */
+    /* Find the highest priority queue that contains ready tasks. */                            \
+    portGET_HIGHEST_PRIORITY( uxTopPriority, uxTopReadyPriority );                              \
+    configASSERT( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ uxTopPriority ] ) ) > 0 );     \
+                                                                                                \
+    /* Following code obtained and adapted from listGET_OWNER_OF_NEXT_ENTRY */                  \
+    List_t* pxConstList = &(pxReadyTasksLists[uxTopPriority]);                                  \
+                                                                                                \
+    /* We want to start by looking always at the first task => listGET_HEAD_ENTRY */            \
+    /* pxIndex = Used to walk through the List_t, point to a xLIST_ITEM*/                       \
+    /* pvOwner = pointer to the TCB. It is contained in the xLIST_ITEM */                       \
+    ListItem_t* pxListItem = listGET_HEAD_ENTRY(pxConstList); /*return ListItem */              \
+                                                                                                \
+    for(UBaseType_t i = 0; i < listCURRENT_LIST_LENGTH( pxConstList); i++){                     \
+        ( pxCurrentTCB ) = ( pxListItem )->pvOwner;                                             \
+        tempOverallPriority = ( pxCurrentTCB )->urgency * ( pxCurrentTCB)->CpuBurst;            \
+        if( tempOverallPriority >= overallPriority){                                            \
+            overallPriority = tempOverallPriority;                                              \
+            highestPriorityBurst = pxListItem;                                                  \
+        }                                                                                       \
+        pxListItem = ( pxListItem )->pxNext; /* Move to the next list item */                   \
+    }                                                                                           \
+                                                                                                \
+    /* To select the correct task to run */                                                     \
+    if(highestPriorityBurst != NULL) {                                                          \
+        ( pxCurrentTCB ) = ( highestPriorityBurst )->pvOwner;                                   \
+    }                                                                                           \
+}                                              
 
 /*-----------------------------------------------------------*/
 
@@ -317,6 +343,11 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
 
     #if ( configUSE_POSIX_ERRNO == 1 )
         int iTaskErrno;
+    #endif
+
+    #if ( configUSE_PRIORITY_BURST == 1 )
+        int CpuBurst;
+        int urgency;
     #endif
 } tskTCB;
 
@@ -538,7 +569,9 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
                                   UBaseType_t uxPriority,
                                   TaskHandle_t * const pxCreatedTask,
                                   TCB_t * pxNewTCB,
-                                  const MemoryRegion_t * const xRegions ) PRIVILEGED_FUNCTION;
+                                  const MemoryRegion_t * const xRegions,
+                                  int pxCpuBurst,
+                                  int urgency ) PRIVILEGED_FUNCTION;
 
 /*
  * Called after a new task has been created and initialised to place the task
@@ -602,7 +635,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
             }
             #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
 
-            prvInitialiseNewTask( pxTaskCode, pcName, ulStackDepth, pvParameters, uxPriority, &xReturn, pxNewTCB, NULL );
+            prvInitialiseNewTask( pxTaskCode, pcName, ulStackDepth, pvParameters, uxPriority, &xReturn, pxNewTCB, NULL, 1, 1 );
             prvAddNewTaskToReadyList( pxNewTCB );
         }
         else
@@ -723,7 +756,9 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
                             const configSTACK_DEPTH_TYPE usStackDepth,
                             void * const pvParameters,
                             UBaseType_t uxPriority,
-                            TaskHandle_t * const pxCreatedTask )
+                            TaskHandle_t * const pxCreatedTask,
+                            int pxCpuBurst,
+                            int urgency )
     {
         TCB_t * pxNewTCB;
         BaseType_t xReturn;
@@ -798,7 +833,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
             }
             #endif /* tskSTATIC_AND_DYNAMIC_ALLOCATION_POSSIBLE */
 
-            prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL );
+            prvInitialiseNewTask( pxTaskCode, pcName, ( uint32_t ) usStackDepth, pvParameters, uxPriority, pxCreatedTask, pxNewTCB, NULL, pxCpuBurst, urgency );
             prvAddNewTaskToReadyList( pxNewTCB );
             xReturn = pdPASS;
         }
@@ -820,7 +855,9 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
                                   UBaseType_t uxPriority,
                                   TaskHandle_t * const pxCreatedTask,
                                   TCB_t * pxNewTCB,
-                                  const MemoryRegion_t * const xRegions )
+                                  const MemoryRegion_t * const xRegions,
+                                  int pxCpuBurst,
+                                  int urgency )
 {
     StackType_t * pxTopOfStack;
     UBaseType_t x;
@@ -880,6 +917,22 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
         pxNewTCB->pxEndOfStack = pxNewTCB->pxStack + ( ulStackDepth - ( uint32_t ) 1 );
     }
     #endif /* portSTACK_GROWTH */
+
+    #if (configUSE_PRIORITY_BURST == 1)
+        if(pxCpuBurst < 1){
+            pxNewTCB->CpuBurst = 1;
+        }else{
+            pxNewTCB->CpuBurst = pxCpuBurst;
+        }
+
+        if(urgency < 1){
+            pxNewTCB->urgency = 1;
+        }else if(urgency > 10){
+            pxNewTCB->urgency = 10;
+        }else{
+           pxNewTCB->urgency = urgency; 
+        }
+    #endif
 
     /* Store the task name in the TCB. */
     if( pcName != NULL )
@@ -1990,7 +2043,9 @@ void vTaskStartScheduler( void )
                                configMINIMAL_STACK_SIZE,
                                ( void * ) NULL,
                                portPRIVILEGE_BIT,  /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
-                               &xIdleTaskHandle ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
+                               &xIdleTaskHandle, /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
+                               1,
+                               1 );
     }
     #endif /* configSUPPORT_STATIC_ALLOCATION */
 
@@ -2044,6 +2099,16 @@ void vTaskStartScheduler( void )
          * have portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() defined in your
          * FreeRTOSConfig.h file. */
         portCONFIGURE_TIMER_FOR_RUN_TIME_STATS();
+
+        #if (configUSE_PRIORITY_BURST == 1)
+        {
+            taskSELECT_TASK_PriorityBurst();
+        }
+        #else
+        {
+            taskSELECT_HIGHEST_PRIORITY_TASK();
+        }
+        #endif
 
         traceTASK_SWITCHED_IN();
 
@@ -3057,9 +3122,13 @@ void vTaskSwitchContext( void )
         }
         #endif
 
-        /* Select a new task to run using either the generic C or port
-         * optimised asm code. */
-        taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+        #if (configUSE_PRIORITY_BURST == 1)
+            taskSELECT_TASK_PriorityBurst();
+        #else
+            /* Select a new task to run using either the generic C or port
+            * optimised asm code. */
+            taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+        #endif
         traceTASK_SWITCHED_IN();
 
         /* After the new task is switched in, update the global errno. */
