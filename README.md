@@ -42,7 +42,7 @@
          </p>
    13. Now open the “Run and debug” (Step 1) section and click on "Start Debugging" (or click F5 - Step 2).
        <p align="center">
-          <img src="images/demoDebug.png" alt="Start Debugging" width="80%" />
+          <img src="images/startDebug.png" alt="Start Debugging" width="80%" />
          </p>
    15. A window will ask you whether to proceed to the next step and then run the demo. Complete Step 1 first and then Step 2 and the Demo will start.
        <p align="center">
