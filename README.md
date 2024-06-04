@@ -24,7 +24,7 @@
       - Choose the installation folder. The default selected folder is recommended.
       - Remember to check the “Add to Path” box to add the path to GNU in the environment variables.
         <p align="center">
-          <img src="images/gnuPath.png" alt="GNU User Variable" width="80%" />
+          <img src="images/gnuPath.jpg" alt="GNU User Variable" width="80%" />
          </p>
    4. **Install the FreeRTOS version 202212.01**: [FreeRTOS](https://www.freertos.org/a00104.html)
    6. **Download and install Make for Windows**: [MAKE](https://gnuwin32.sourceforge.net/downlinks/make.php)
