@@ -1,6 +1,6 @@
 #Instructions for building a demo
 1. **Install Visual Studio Code**: [VSCode](https://code.visualstudio.com/download)
-   - Download the VSCode version for Windows (x64).
+   - Download the VSCode version for **Windows (x64)**.
    - Manually run the installation file (.exe) if it does not start automatically.
    - Accept terms of use.
    - Choose the installation folder. The default selected folder is recommended.
@@ -8,3 +8,14 @@
      <p align="center">
        <img src="images/vscodePath.png" alt="Install VSCode" width="80%" />
       </p>
+ 2. ** Download QEMU**: [QEMU](https://qemu.weilnetz.de/w64/)
+    - Enter the folder called "2023/".
+    - Click on “qemu-w64-setup-20231224.exe.” The download will start automatically.
+    - After the installation is complete, add the path to QEMU in the **system** variables.
+      - Note: the path is the installation folder chosen during the installation phase.
+      - Open "Environment Variables".
+      - Click on “New” in the System Variables.
+      - Add variable name and path to QEMU.
+        <p align="center">
+          <img src="images/qemuPath.png" alt="QEMU System Variable" width="80%" />
+         </p>
