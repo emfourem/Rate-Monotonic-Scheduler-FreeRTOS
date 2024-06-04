@@ -26,7 +26,17 @@
         <p align="center">
           <img src="images/gnuPath.png" alt="GNU User Variable" width="80%" />
          </p>
-
-     4. **Install the FreeRTOS version 202212.01**:[FreeRTOS](https://www.freertos.org/a00104.html)
-     5. **Download and install Make for Windows**: [MAKE](https://gnuwin32.sourceforge.net/downlinks/make.php)
-      6. 
+   4. **Install the FreeRTOS version 202212.01**: [FreeRTOS](https://www.freertos.org/a00104.html)
+   6. **Download and install Make for Windows**: [MAKE](https://gnuwin32.sourceforge.net/downlinks/make.php)
+   7. **Install MinGW version 11.0.0**: [MinGW](https://www.mingw-w64.org/downloads/#msys2)
+   8. Add these paths to "Path" User Variable:
+      - For make: C:\Program Files (x86)\GnuWin32\bin
+      - Fot qemu: C:\Program Files\qemu
+      - For the debugger used into the demo: C:\Program Files (x86)\Arm GNU Toolchain arm-none-eabi\13.2 Rel1\bin
+         - Note: the paths are related to the installation on Windows, check that they are the same on your pc.
+   10. Open the folder "C:\yourPath\FreeRTOSv202212.01\FreeRTOSv202212.01\FreeRTOS\Demo\CORTEX_MPS2_QEMU_IAR_GCC" as VSCode Project.
+   11. Navigate to the .vscode folder.
+   12. Open the file "launch.json" and change the “miDebuggerPath” to the path to the new debugger in        the GNU Arm Embedded Toolchain downloaded earlier. The new debugger will be “GNU Arm Embedded          Toolchain/10 2021.10/bin/arm-none-eabi-gdb.exe”.
+       <p align="center">
+          <img src="images/launch.png" alt="Edit launch file" width="80%" />
+         </p>
