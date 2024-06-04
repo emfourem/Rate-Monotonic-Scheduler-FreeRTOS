@@ -48,4 +48,5 @@
        <p align="center">
           <img src="images/demoStart.png" alt="Start Demo" width="80%" />
          </p>
+   16. See the "Terminal" to monitor the execution of the Demo.
        
