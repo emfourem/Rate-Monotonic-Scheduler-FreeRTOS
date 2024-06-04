@@ -36,17 +36,15 @@
          - Note: the paths are related to the installation on Windows, check that they are the same on your pc or if they are different, change them appropriately.
    10. Open the folder "C:\yourPath\FreeRTOSv202212.01\FreeRTOSv202212.01\FreeRTOS\Demo\CORTEX_MPS2_QEMU_IAR_GCC" as VSCode Project.
    11. Navigate to the .vscode folder.
-   12. Open the file "launch.json" and change the “miDebuggerPath” to the path to the new debugger in        the GNU Arm Embedded Toolchain downloaded earlier. The new debugger will be “GNU Arm Embedded          Toolchain/10 2021.10/bin/arm-none-eabi-gdb.exe”.
+   12. Open the file "launch.json" and change the “miDebuggerPath” to the path to the new debugger in the GNU Arm Embedded Toolchain downloaded earlier. The new debugger will be “GNU           Arm Embedded Toolchain/10 2021.10/bin/arm-none-eabi-gdb.exe”.
        <p align="center">
           <img src="images/launch.png" alt="Edit launch file" width="80%" />
          </p>
-   13. Now open the “Run and debug” (Step 1) section and click on "Start Debugging" (or click F5 - Step 2).
-       <p align="center">
-          <img src="images/startDebug.png" alt="Start Debugging" width="80%" />
-         </p>
-   15. A window will ask you whether to proceed to the next step and then run the demo. Complete Step 1 first and then Step 2 and the Demo will start.
-       <p align="center">
-          <img src="images/demoStart.png" alt="Start Demo" width="80%" />
-         </p>
-   16. See the "Terminal" to monitor the execution of the Demo.
+   13. Navigate within the build\gcc subfolder and open an Integrated Terminal here (right click and then "Open in Integrated Terminal"). Execute the "make" command.
+   14. Open a shell and execute the code:
+       ```
+       qemu-system-arm -machine mps2-an385 -cpu cortex-m3 -kernel "C:\*yourPath*\FreeRTOSv202212.01\FreeRTOS\Demo\CORTEX_MPS2_QEMU_IAR_GCC\build\gcc\output\RTOSDemo.out" -monitor none -nographic -serial stdio
+       ```
+
+   15. A simple demo will start automatically.
        
