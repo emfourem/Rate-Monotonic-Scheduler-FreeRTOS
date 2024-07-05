@@ -28,8 +28,10 @@
  * See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
  * instructions.
  *
- * In this demo, 3 tasks are created and executed periodically according to their period for a limited number of times.
- * Each time each individual task is re-executed, the priority is dynamically changed.
+ * In this demo, 6 tasks are created and executed periodically according to their period.
+ * The tasks are executed indefinitely until the demo is stopped. 
+ * Alternatively, a timer could be created that expires after the first period,
+ * given by the minimum common multiple of the individual periods (mcm(2,3,4)=12).
  *  
  * Running in QEMU:
  * Use the following commands to start the application running in a way that
@@ -46,9 +48,6 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Demo includes. */
-#include <stdlib.h>
-#include <timers.h>
 
 /* Demo defines. */
 #define main_DEMO 1
@@ -67,116 +66,168 @@ required UART registers. */
  */
 static void prvUARTInit(void);
 
+/* The period of each task. The times are converted from
+milliseconds to ticks using the pdMS_TO_TICKS() macro. */
+#define mainTASK_FREQUENCY1_MS pdMS_TO_TICKS(4000UL) /* 2 seconds. */
+#define mainTASK_FREQUENCY2_MS pdMS_TO_TICKS(6000UL) /* 3 seconds. */
+#define mainTASK_FREQUENCY3_MS pdMS_TO_TICKS(8000UL) /* 4 seconds. */
+
 /*-----------------------------------------------------------*/
 static char const *const pcText1 = "Task 1 is running";
 static char const *const pcText2 = "Task 2 is running";
 static char const *const pcText3 = "Task 3 is running";
+static char const *const pcText4 = "Task 4 is running";
+static char const *const pcText5 = "Task 5 is running";
+static char const *const pcText6 = "Task 6 is running";
 
 /* The functions that implement the tasks. */
 static void vTask1(void *pvParameters);
 static void vTask2(void *pvParameters);
 static void vTask3(void *pvParameters);
 
-/* The handlers for the tasks. */
-static xTaskHandle xTask1Handle;
-static xTaskHandle xTask2Handle;
-static xTaskHandle xTask3Handle;
 
 /*-----------------------------------------------------------*/
+
+	/* The expected running schedule, repeated each 12 seconds given that the period will be 12 (mcm(2,3,4)), will be:
+	 * 6,5,4,3,2,1,4,1,5,2,6,4,3,1,5,4,2,1,6,4,3,1,5,2,4,1,6,5,4,3,2,1 and then again the same.
+	 */
+
+    // Function to print the current free heap size
+void printFreeHeapSize(const char *label)
+{
+    size_t freeHeapSize = xPortGetFreeHeapSize();
+    printf("%s: Free heap size = %u bytes\n", label, (unsigned int)freeHeapSize);
+}
 
 void main(void)
 {
+    /* Hardware initialisation.  printf() output uses the UART for IO. */
+    prvUARTInit();
 
-	/* Hardware initialisation.  printf() output uses the UART for IO. */
-	prvUARTInit();
+    /* Create the tasks and print heap size after each creation */
+    xTaskCreate(vTask1, "Task 1", configMINIMAL_STACK_SIZE * 3, (void *)pcText1, 1, NULL);
+    printFreeHeapSize("Heap size after Task 1 creation");
 
+    xTaskCreate(vTask2, "Task 2", configMINIMAL_STACK_SIZE * 3, (void *)pcText2, 2, NULL);
+    printFreeHeapSize("Heap size after Task 2 creation");
 
-	/* Create the task. */
-	xTaskCreate(vTask1,					  /* The function that implements the task. */
-				"Task 1",				  /* The text name assigned to the task - for debug only as it is not used by the kernel. */
-				configMINIMAL_STACK_SIZE*2, /* The size of the stack to allocate to the task. */
-				(void *)pcText1,		  /* The parameter passed to the task, works in a stack fashion */
-				1,						  /* The priority assigned to the task. */
-				&xTask1Handle);			  /* The task handle is not required, so NULL is passed. */
+    xTaskCreate(vTask3, "Task 3", configMINIMAL_STACK_SIZE * 3, (void *)pcText3, 3, NULL);
+    printFreeHeapSize("Heap size after Task 3 creation");
 
-	xTaskCreate(vTask2, "Task 2", configMINIMAL_STACK_SIZE*2, (void *)pcText2, 2, &xTask2Handle);
+    xTaskCreate(vTask1, "Task 4", configMINIMAL_STACK_SIZE * 4, (void *)pcText4, 4, NULL);
+    printFreeHeapSize("Heap size after Task 4 creation");
 
-    xTaskCreate(vTask3, "Task 3", configMINIMAL_STACK_SIZE*2, (void *)pcText3, 3, &xTask3Handle);
+    xTaskCreate(vTask2, "Task 5", configMINIMAL_STACK_SIZE * 4, (void *)pcText5, 5, NULL);
+    printFreeHeapSize("Heap size after Task 5 creation");
 
-	/* Start the scheduler. */
-	vTaskStartScheduler();
+    xTaskCreate(vTask3, "Task 6", configMINIMAL_STACK_SIZE * 4, (void *)pcText6, 6, NULL);
+    printFreeHeapSize("Heap size after Task 6 creation");
 
-	/* If all is well, the scheduler will now be running, and the following
-	line will never be reached.  If the following line does execute, then
-	there was insufficient FreeRTOS heap memory available for the idle and/or
-	timer tasks	to be created.  See the memory management section on the
-	FreeRTOS web site for more details.  NOTE: This demo uses static allocation
-	for the idle and timer tasks so this line should never execute. */
-	for (;;);
+    /* Start the scheduler. */
+    vTaskStartScheduler();
+
+    /* If all is well, the scheduler will now be running, and the following
+    line will never be reached.  If the following line does execute, then
+    there was insufficient FreeRTOS heap memory available for the idle and/or
+    timer tasks to be created.  See the memory management section on the
+    FreeRTOS web site for more details.  NOTE: This demo uses static allocation
+    for the idle and timer tasks so this line should never execute. */
+    for (;;);
 }
-/*-----------------------------------------------------------*/
 
+/*-----------------------------------------------------------*/
 static void vTask1(void *pvParameters)
 {
-	for (int i=0; i<5; i++) {
+    TickType_t xNextWakeTime;
+    const TickType_t xBlockTime = mainTASK_FREQUENCY1_MS;
+    const char *pcTaskName;
+    pcTaskName = (char *)pvParameters;
 
-        taskENTER_CRITICAL();
-        {
-            printf("%s with priority %d\n",(char *)pvParameters, (int)uxTaskPriorityGet(NULL));
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    int i = 0;
+
+    for (;;)
+    {
+        printFreeHeapSize(pcTaskName);
+
+        /* Place this task in the blocked state until it is time to run again.
+        The block time is specified in ticks, pdMS_TO_TICKS() was used to
+        convert a time specified in milliseconds into a time specified in ticks.
+        While in the Blocked state this task will not consume any CPU time. */
+
+        if (i == 0){
+            vTaskDelayUntil(&xNextWakeTime, xBlockTime);
+        }else{
+            break;
         }
-        taskEXIT_CRITICAL();
-
-        vTaskDelay(pdMS_TO_TICKS(2000UL)); // Delay for 2 seconds
-
-        vTaskPrioritySet(xTask1Handle, 2 +i); /* 1,2,3,4,5 */
-
+        i++;
     }
-
-    /* To free memory used by task. */
     vTaskDelete(NULL);
-
 }
+
 
 static void vTask2(void *pvParameters)
 {
-	for (int i=0; i<5; i++) {
-        
-        taskENTER_CRITICAL();
-        {
-            printf("%s with priority %d\n",(char *)pvParameters, (int)uxTaskPriorityGet(NULL));
+    TickType_t xNextWakeTime;
+    const TickType_t xBlockTime = mainTASK_FREQUENCY2_MS;
+    const char *pcTaskName;
+    pcTaskName = (char *)pvParameters;
+
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    int i = 0;
+
+    for (;;)
+    {
+        printFreeHeapSize(pcTaskName);
+
+        /* Place this task in the blocked state until it is time to run again.
+        The block time is specified in ticks, pdMS_TO_TICKS() was used to
+        convert a time specified in milliseconds into a time specified in ticks.
+        While in the Blocked state this task will not consume any CPU time. */
+
+        if (i == 0){
+            vTaskDelayUntil(&xNextWakeTime, xBlockTime);
+        }else{
+            break;
         }
-        taskEXIT_CRITICAL();
-
-        vTaskDelay(pdMS_TO_TICKS(2000UL)); // Delay for 2 seconds
-
-        vTaskPrioritySet(xTask2Handle, 6 - i); /* 2,6,5,4,3 */
-
+        i++;
     }
-
-    /* To free memory used by task. */
     vTaskDelete(NULL);
-
 }
 
 static void vTask3(void *pvParameters)
 {
-	for (int i=0; i<3; i++) {
-        
-        taskENTER_CRITICAL();
-        {
-            printf("%s with priority %d\n",(char *)pvParameters, (int)uxTaskPriorityGet(NULL));
+    TickType_t xNextWakeTime;
+    const TickType_t xBlockTime = mainTASK_FREQUENCY3_MS;
+    const char *pcTaskName;
+    pcTaskName = (char *)pvParameters;
+
+    /* Initialise xNextWakeTime - this only needs to be done once. */
+    xNextWakeTime = xTaskGetTickCount();
+
+    int i = 0;
+
+    for (;;)
+    {
+        printFreeHeapSize(pcTaskName);
+
+        /* Place this task in the blocked state until it is time to run again.
+        The block time is specified in ticks, pdMS_TO_TICKS() was used to
+        convert a time specified in milliseconds into a time specified in ticks.
+        While in the Blocked state this task will not consume any CPU time. */
+
+        if (i == 0){
+            vTaskDelayUntil(&xNextWakeTime, xBlockTime);
+        }else{
+            break;
         }
-        taskEXIT_CRITICAL();
-
-        vTaskDelay(pdMS_TO_TICKS(1000UL)); //Delay for 1 second
-
-        vTaskPrioritySet(xTask3Handle, 7 - i); /* 3,7,6*/
-
+        i++;
     }
-
-    /* To free memory used by task. */
     vTaskDelete(NULL);
-
 }
 
 /*-----------------------------------------------------------*/
