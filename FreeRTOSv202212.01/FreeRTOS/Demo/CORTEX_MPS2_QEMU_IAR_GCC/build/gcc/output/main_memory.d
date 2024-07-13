@@ -1,4 +1,5 @@
-output/main.o: ../../../..//Demo/CORTEX_MPS2_QEMU_IAR_GCC/main.c \
+output/main_memory.o: \
+ ../../../..//Demo/CORTEX_MPS2_QEMU_IAR_GCC/main_memory.c \
  ../../../..//Source/include/FreeRTOS.h \
  ../../../..//Demo/CORTEX_MPS2_QEMU_IAR_GCC/FreeRTOSConfig.h \
  ../../../..//Source/include/projdefs.h \

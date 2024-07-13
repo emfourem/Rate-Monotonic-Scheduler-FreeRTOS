@@ -151,7 +151,7 @@ void vStartComTestStringsTasks( UBaseType_t uxPriority,
 
     /* Create the Rx task and the Tx timer.  The timer is started from the
      * Rx task. */
-    xTaskCreate( vComRxTask, "COMRx", comSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
+    xTaskCreate( vComRxTask, "COMRx", comSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL );
     xTxTimer = xTimerCreate( "TxTimer", comTX_MIN_BLOCK_TIME, pdFALSE, NULL, prvComTxTimerCallback );
     configASSERT( xTxTimer );
 }

@@ -114,8 +114,8 @@ void vCreateBlockTimeTasks( void )
         vQueueAddToRegistry( xTestQueue, "Block_Time_Queue" );
 
         /* Create the two test tasks. */
-        xTaskCreate( vPrimaryBlockTimeTestTask, "BTest1", bktBLOCK_TIME_TASK_STACK_SIZE, NULL, bktPRIMARY_PRIORITY, NULL, 1, 1 );
-        xTaskCreate( vSecondaryBlockTimeTestTask, "BTest2", bktBLOCK_TIME_TASK_STACK_SIZE, NULL, bktSECONDARY_PRIORITY, &xSecondary, 1, 1 );
+        xTaskCreate( vPrimaryBlockTimeTestTask, "BTest1", bktBLOCK_TIME_TASK_STACK_SIZE, NULL, bktPRIMARY_PRIORITY, NULL );
+        xTaskCreate( vSecondaryBlockTimeTestTask, "BTest2", bktBLOCK_TIME_TASK_STACK_SIZE, NULL, bktSECONDARY_PRIORITY, &xSecondary );
     }
 }
 /*-----------------------------------------------------------*/

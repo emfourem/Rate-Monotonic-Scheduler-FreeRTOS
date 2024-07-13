@@ -92,9 +92,7 @@ void vStartStreamBufferInterruptDemo( void )
                  configMINIMAL_STACK_SIZE, /* Stack size (in words!). */
                  NULL,                     /* Task parameter is not used. */
                  tskIDLE_PRIORITY + 2,     /* The priority at which the task is created. */
-                 NULL,                     /* No use for the task handle. */
-                 1,
-                 1 );
+                 NULL );                   /* No use for the task handle. */
 }
 /*-----------------------------------------------------------*/
 

@@ -69,7 +69,7 @@ void vStartLEDFlashTasks( UBaseType_t uxPriority )
     for( xLEDTask = 0; xLEDTask < ledNUMBER_OF_LEDS; ++xLEDTask )
     {
         /* Spawn the task. */
-        xTaskCreate( vLEDFlashTask, "LEDx", ledSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
+        xTaskCreate( vLEDFlashTask, "LEDx", ledSTACK_SIZE, NULL, uxPriority, ( TaskHandle_t * ) NULL );
     }
 }
 /*-----------------------------------------------------------*/

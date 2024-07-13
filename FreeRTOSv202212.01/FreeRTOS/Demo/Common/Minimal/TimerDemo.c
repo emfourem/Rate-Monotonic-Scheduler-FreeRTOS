@@ -149,7 +149,7 @@ void vStartTimerDemoTask( TickType_t xBasePeriodIn )
      * task, which will then preempt this task). */
     if( xTestStatus != pdFAIL )
     {
-        xTaskCreate( prvTimerTestTask, "Tmr Tst", tmrTIMER_TEST_TASK_STACK_SIZE, NULL, configTIMER_TASK_PRIORITY - 1, NULL, 1, 1 );
+        xTaskCreate( prvTimerTestTask, "Tmr Tst", tmrTIMER_TEST_TASK_STACK_SIZE, NULL, configTIMER_TASK_PRIORITY - 1, NULL );
     }
 }
 /*-----------------------------------------------------------*/

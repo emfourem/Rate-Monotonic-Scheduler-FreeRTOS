@@ -28,10 +28,8 @@
  * See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
  * instructions.
  *
- * In this demo, 6 tasks are created and executed periodically according to their period.
- * The tasks are executed indefinitely until the demo is stopped. 
- * Alternatively, a timer could be created that expires after the first period,
- * given by the minimum common multiple of the individual periods (mcm(2,3,4)=12).
+ * In this demo, 6 tasks are created with different stack sizes and using printouts,
+ * the dynamic allocation and release of memory in the heap size is shown.
  *  
  * Running in QEMU:
  * Use the following commands to start the application running in a way that
@@ -88,11 +86,7 @@ static void vTask3(void *pvParameters);
 
 /*-----------------------------------------------------------*/
 
-	/* The expected running schedule, repeated each 12 seconds given that the period will be 12 (mcm(2,3,4)), will be:
-	 * 6,5,4,3,2,1,4,1,5,2,6,4,3,1,5,4,2,1,6,4,3,1,5,2,4,1,6,5,4,3,2,1 and then again the same.
-	 */
-
-    // Function to print the current free heap size
+// Function to print the current free heap size
 void printFreeHeapSize(const char *label)
 {
     size_t freeHeapSize = xPortGetFreeHeapSize();
@@ -152,11 +146,6 @@ static void vTask1(void *pvParameters)
     {
         printFreeHeapSize(pcTaskName);
 
-        /* Place this task in the blocked state until it is time to run again.
-        The block time is specified in ticks, pdMS_TO_TICKS() was used to
-        convert a time specified in milliseconds into a time specified in ticks.
-        While in the Blocked state this task will not consume any CPU time. */
-
         if (i == 0){
             vTaskDelayUntil(&xNextWakeTime, xBlockTime);
         }else{
@@ -184,11 +173,6 @@ static void vTask2(void *pvParameters)
     {
         printFreeHeapSize(pcTaskName);
 
-        /* Place this task in the blocked state until it is time to run again.
-        The block time is specified in ticks, pdMS_TO_TICKS() was used to
-        convert a time specified in milliseconds into a time specified in ticks.
-        While in the Blocked state this task will not consume any CPU time. */
-
         if (i == 0){
             vTaskDelayUntil(&xNextWakeTime, xBlockTime);
         }else{
@@ -214,11 +198,6 @@ static void vTask3(void *pvParameters)
     for (;;)
     {
         printFreeHeapSize(pcTaskName);
-
-        /* Place this task in the blocked state until it is time to run again.
-        The block time is specified in ticks, pdMS_TO_TICKS() was used to
-        convert a time specified in milliseconds into a time specified in ticks.
-        While in the Blocked state this task will not consume any CPU time. */
 
         if (i == 0){
             vTaskDelayUntil(&xNextWakeTime, xBlockTime);

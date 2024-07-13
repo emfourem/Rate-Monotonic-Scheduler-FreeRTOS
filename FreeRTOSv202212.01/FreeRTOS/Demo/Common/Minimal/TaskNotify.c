@@ -118,9 +118,7 @@ void vStartTaskNotifyTask( void )
                  notifyNOTIFIED_TASK_STACK_SIZE, /* Task's stack size in words, not bytes!. */
                  NULL,                           /* Task parameter, not used in this case. */
                  notifyTASK_PRIORITY,            /* Task priority, 0 is the lowest. */
-                 &xTaskToNotify,                 /* Used to pass a handle to the task out is needed, otherwise set to NULL. */
-                 1,
-                 1 );
+                 &xTaskToNotify );               /* Used to pass a handle to the task out is needed, otherwise set to NULL. */
 
     /* Pseudo seed the random number generator. */
     uxNextRand = ( size_t ) prvRand;

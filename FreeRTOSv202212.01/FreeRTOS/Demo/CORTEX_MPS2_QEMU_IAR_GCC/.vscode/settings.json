@@ -1,4 +1,9 @@
 {
     "github.branchProtection": true,
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "*.embeddedhtml": "html",
+        "task.h": "c",
+        "freertos.h": "c"
+    }
 }

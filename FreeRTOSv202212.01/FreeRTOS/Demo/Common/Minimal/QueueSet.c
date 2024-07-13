@@ -210,11 +210,11 @@
     void vStartQueueSetTasks( void )
     {
         /* Create the tasks. */
-        xTaskCreate( prvQueueSetSendingTask, "SetTx", configMINIMAL_STACK_SIZE, NULL, queuesetMEDIUM_PRIORITY, &xQueueSetSendingTask, 1, 1 );
+        xTaskCreate( prvQueueSetSendingTask, "SetTx", configMINIMAL_STACK_SIZE, NULL, queuesetMEDIUM_PRIORITY, &xQueueSetSendingTask );
 
         if( xQueueSetSendingTask != NULL )
         {
-            xTaskCreate( prvQueueSetReceivingTask, "SetRx", configMINIMAL_STACK_SIZE, ( void * ) xQueueSetSendingTask, queuesetMEDIUM_PRIORITY, &xQueueSetReceivingTask, 1, 1 );
+            xTaskCreate( prvQueueSetReceivingTask, "SetRx", configMINIMAL_STACK_SIZE, ( void * ) xQueueSetSendingTask, queuesetMEDIUM_PRIORITY, &xQueueSetReceivingTask );
 
             /* It is important that the sending task does not attempt to write to a
              * queue before the queue has been created.  It is therefore placed into

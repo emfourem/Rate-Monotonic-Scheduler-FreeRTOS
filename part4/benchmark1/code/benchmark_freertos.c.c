@@ -28,10 +28,8 @@
  * See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
  * instructions.
  *
- * In this demo, 6 tasks are created and executed periodically according to their period.
- * The tasks are executed indefinitely until the demo is stopped.
- * Alternatively, a timer could be created that expires after the first period,
- * given by the minimum common multiple of the individual periods (mcm(2,3,4)=12).
+ * In this demo, 3 tasks are created with the same priority.
+ * They run "simultaneously" due to the Round Robin used by FreeRTOS.
  *
  * Running in QEMU:
  * Use the following commands to start the application running in a way that
@@ -81,9 +79,6 @@ static void vTask3(void *pvParameters);
 
 /*-----------------------------------------------------------*/
 
-/* The expected running schedule, repeated each 12 seconds given that the period will be 12 (mcm(2,3,4)), will be:
- * 6,5,4,3,2,1,4,1,5,2,6,4,3,1,5,4,2,1,6,4,3,1,5,2,4,1,6,5,4,3,2,1 and then again the same.
- */
 
 void main(void)
 {

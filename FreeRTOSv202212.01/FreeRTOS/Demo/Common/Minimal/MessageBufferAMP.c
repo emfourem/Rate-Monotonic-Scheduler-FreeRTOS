@@ -136,9 +136,7 @@ void vStartMessageBufferAMPTasks( configSTACK_DEPTH_TYPE xStackSize )
                  xStackSize,       /* Stack size (in words!). */
                  NULL,             /* Task parameter is not used. */
                  tskIDLE_PRIORITY, /* The priority at which the task is created. */
-                 NULL,             /* No use for the task handle. */
-                 1,
-                 1 );
+                 NULL );           /* No use for the task handle. */
 
     for( x = 0; x < mbaNUMBER_OF_CORE_B_TASKS; x++ )
     {
@@ -153,9 +151,7 @@ void vStartMessageBufferAMPTasks( configSTACK_DEPTH_TYPE xStackSize )
                      xStackSize,
                      ( void * ) x,
                      tskIDLE_PRIORITY + 1,
-                     NULL, 
-                     1,
-                     1 );
+                     NULL );
     }
 }
 /*-----------------------------------------------------------*/

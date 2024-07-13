@@ -112,8 +112,8 @@ void vStartSemaphoreTasks( UBaseType_t uxPriority )
             pxFirstSemaphoreParameters->xBlockTime = ( TickType_t ) 0;
 
             /* Spawn the first two tasks.  As they poll they operate at the idle priority. */
-            xTaskCreate( prvSemaphoreTest, "PolSEM1", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL, 1, 1 );
-            xTaskCreate( prvSemaphoreTest, "PolSEM2", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL, 1, 1 );
+            xTaskCreate( prvSemaphoreTest, "PolSEM1", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL );
+            xTaskCreate( prvSemaphoreTest, "PolSEM2", semtstSTACK_SIZE, ( void * ) pxFirstSemaphoreParameters, tskIDLE_PRIORITY, ( TaskHandle_t * ) NULL );
 
             /* vQueueAddToRegistry() adds the semaphore to the registry, if one
              * is in use.  The registry is provided as a means for kernel aware
@@ -141,8 +141,8 @@ void vStartSemaphoreTasks( UBaseType_t uxPriority )
             *( pxSecondSemaphoreParameters->pulSharedVariable ) = semtstBLOCKING_EXPECTED_VALUE;
             pxSecondSemaphoreParameters->xBlockTime = xBlockTime / portTICK_PERIOD_MS;
 
-            xTaskCreate( prvSemaphoreTest, "BlkSEM1", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
-            xTaskCreate( prvSemaphoreTest, "BlkSEM2", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL, 1, 1 );
+            xTaskCreate( prvSemaphoreTest, "BlkSEM1", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL );
+            xTaskCreate( prvSemaphoreTest, "BlkSEM2", semtstSTACK_SIZE, ( void * ) pxSecondSemaphoreParameters, uxPriority, ( TaskHandle_t * ) NULL );
 
             /* vQueueAddToRegistry() adds the semaphore to the registry, if one
              * is in use.  The registry is provided as a means for kernel aware

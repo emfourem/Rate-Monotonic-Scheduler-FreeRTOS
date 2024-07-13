@@ -137,8 +137,8 @@
     void vCreateAbortDelayTasks( void )
     {
         /* Create the two test tasks described above. */
-        xTaskCreate( prvControllingTask, pcControllingTaskName, configMINIMAL_STACK_SIZE, NULL, abtCONTROLLING_PRIORITY, NULL, 1, 1 );
-        xTaskCreate( prvBlockingTask, pcBlockingTaskName, configMINIMAL_STACK_SIZE, NULL, abtBLOCKING_PRIORITY, NULL, 1, 1 );
+        xTaskCreate( prvControllingTask, pcControllingTaskName, configMINIMAL_STACK_SIZE, NULL, abtCONTROLLING_PRIORITY, NULL );
+        xTaskCreate( prvBlockingTask, pcBlockingTaskName, configMINIMAL_STACK_SIZE, NULL, abtBLOCKING_PRIORITY, NULL );
     }
 /*-----------------------------------------------------------*/
 

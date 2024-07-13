@@ -266,8 +266,7 @@ typedef enum
  *                            configSTACK_DEPTH_TYPE usStackDepth,
  *                            void *pvParameters,
  *                            UBaseType_t uxPriority,
- *                            TaskHandle_t *pxCreatedTask,
- *                            int pxCpuBurst
+ *                            TaskHandle_t *pxCreatedTask
  *                        );
  * @endcode
  *
@@ -358,9 +357,7 @@ typedef enum
                             const configSTACK_DEPTH_TYPE usStackDepth,
                             void * const pvParameters,
                             UBaseType_t uxPriority,
-                            TaskHandle_t * const pxCreatedTask,
-                            int pxCpuBurst,
-                            int urgency ) PRIVILEGED_FUNCTION;
+                            TaskHandle_t * const pxCreatedTask ) PRIVILEGED_FUNCTION;
 #endif
 
 /**

@@ -122,9 +122,9 @@ void vStartRecursiveMutexTasks( void )
          * defined to be less than 1. */
         vQueueAddToRegistry( ( QueueHandle_t ) xMutex, "Recursive_Mutex" );
 
-        xTaskCreate( prvRecursiveMutexControllingTask, "Rec1", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuCONTROLLING_TASK_PRIORITY, &xControllingTaskHandle, 1, 1 );
-        xTaskCreate( prvRecursiveMutexBlockingTask, "Rec2", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuBLOCKING_TASK_PRIORITY, &xBlockingTaskHandle, 1, 1 );
-        xTaskCreate( prvRecursiveMutexPollingTask, "Rec3", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuPOLLING_TASK_PRIORITY, NULL, 1, 1 );
+        xTaskCreate( prvRecursiveMutexControllingTask, "Rec1", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuCONTROLLING_TASK_PRIORITY, &xControllingTaskHandle );
+        xTaskCreate( prvRecursiveMutexBlockingTask, "Rec2", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuBLOCKING_TASK_PRIORITY, &xBlockingTaskHandle );
+        xTaskCreate( prvRecursiveMutexPollingTask, "Rec3", recmuRECURSIVE_MUTEX_TEST_TASK_STACK_SIZE, NULL, recmuPOLLING_TASK_PRIORITY, NULL );
     }
 }
 /*-----------------------------------------------------------*/

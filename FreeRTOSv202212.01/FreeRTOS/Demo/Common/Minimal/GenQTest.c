@@ -166,7 +166,7 @@ void vStartGenericQueueTasks( UBaseType_t uxPriority )
         /* Create the demo task and pass it the queue just created.  We are
          * passing the queue handle by value so it does not matter that it is
          * declared on the stack here. */
-        xTaskCreate( prvSendFrontAndBackTest, "GenQ", genqGENERIC_QUEUE_TEST_TASK_STACK_SIZE, ( void * ) xQueue, uxPriority, NULL, 1, 1 );
+        xTaskCreate( prvSendFrontAndBackTest, "GenQ", genqGENERIC_QUEUE_TEST_TASK_STACK_SIZE, ( void * ) xQueue, uxPriority, NULL );
     }
 
     /* Create the mutex used by the prvMutexTest task. */
@@ -185,15 +185,15 @@ void vStartGenericQueueTasks( UBaseType_t uxPriority )
         /* Create the mutex demo tasks and pass it the mutex just created.  We
          * are passing the mutex handle by value so it does not matter that it is
          * declared on the stack here. */
-        xTaskCreate( prvLowPriorityMutexTask, "MuLow", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_LOW_PRIORITY, NULL, 1, 1 );
-        xTaskCreate( prvMediumPriorityMutexTask, "MuMed", configMINIMAL_STACK_SIZE, NULL, genqMUTEX_MEDIUM_PRIORITY, &xMediumPriorityMutexTask, 1, 1 );
-        xTaskCreate( prvHighPriorityMutexTask, "MuHigh", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_HIGH_PRIORITY, &xHighPriorityMutexTask, 1, 1 );
+        xTaskCreate( prvLowPriorityMutexTask, "MuLow", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_LOW_PRIORITY, NULL );
+        xTaskCreate( prvMediumPriorityMutexTask, "MuMed", configMINIMAL_STACK_SIZE, NULL, genqMUTEX_MEDIUM_PRIORITY, &xMediumPriorityMutexTask );
+        xTaskCreate( prvHighPriorityMutexTask, "MuHigh", genqMUTEX_TEST_TASK_STACK_SIZE, ( void * ) xMutex, genqMUTEX_HIGH_PRIORITY, &xHighPriorityMutexTask );
 
         /* If INCLUDE_xTaskAbortDelay is set then additional tests are performed,
          * requiring two instances of prvHighPriorityMutexTask(). */
         #if ( INCLUDE_xTaskAbortDelay == 1 )
         {
-            xTaskCreate( prvHighPriorityMutexTask, "MuHigh2", configMINIMAL_STACK_SIZE, ( void * ) xMutex, genqMUTEX_MEDIUM_PRIORITY, &xSecondMediumPriorityMutexTask, 1, 1 );
+            xTaskCreate( prvHighPriorityMutexTask, "MuHigh2", configMINIMAL_STACK_SIZE, ( void * ) xMutex, genqMUTEX_MEDIUM_PRIORITY, &xSecondMediumPriorityMutexTask );
         }
         #endif /* INCLUDE_xTaskAbortDelay */
     }
