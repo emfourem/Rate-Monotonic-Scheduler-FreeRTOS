@@ -1,0 +1,83 @@
+vTask1 is running. Start time: 0
+vTask1 finished at time 8.
+vTask2 is running. Start time: 8
+vTask2 finished at time 16.
+vTask3 is running. Start time: 16
+vTask1 is running. Start time: 20
+vTask1 finished at time 28.
+vTask2 is running. Start time: 30
+vTask2 finished at time 38.
+vTask3 finished at time 39.
+Idle starts: 39.
+Idle starts: 39.
+Idle starts: 39.
+Idle starts: 39.
+vTask1 is running. Start time: 40
+vTask1 finished at time 48.
+vTask3 is running. Start time: 48
+vTask3 finished at time 55.
+Idle starts: 55.
+Idle starts: 55.
+Idle starts: 55.
+Idle starts: 56.
+Idle starts: 56.
+Idle starts: 57.
+Idle starts: 57.
+Idle starts: 57.
+Idle starts: 57.
+Idle starts: 58.
+Idle starts: 58.
+Idle starts: 58.
+Idle starts: 59.
+Idle starts: 59.
+vTask1 is running. Start time: 60
+vTask1 finished at time 68.
+vTask2 is running. Start time: 68
+vTask2 finished at time 76.
+Idle starts: 76.
+Idle starts: 76.
+Idle starts: 76.
+Idle starts: 77.
+Idle starts: 77.
+Idle starts: 77.
+Idle starts: 78.
+Idle starts: 78.
+Idle starts: 78.
+Idle starts: 79.
+Idle starts: 79.
+Idle starts: 79.
+vTask1 is running. Start time: 80
+vTask1 finished at time 88.
+vTask3 is running. Start time: 88
+vTask2 is running. Start time: 90
+vTask2 finished at time 98.
+vTask1 is running. Start time: 100
+vTask1 finished at time 108.
+vTask3 finished at time 111.
+Idle starts: 111.
+Idle starts: 111.
+Idle starts: 112.
+Idle starts: 112.
+Idle starts: 113.
+Idle starts: 113.
+Idle starts: 114.
+Idle starts: 114.
+Idle starts: 114.
+Idle starts: 115.
+Idle starts: 115.
+Idle starts: 115.
+Idle starts: 116.
+Idle starts: 116.
+Idle starts: 116.
+Idle starts: 117.
+Idle starts: 117.
+Idle starts: 117.
+Idle starts: 118.
+Idle starts: 118.
+Idle starts: 119.
+Idle starts: 119.
+Idle starts: 119.
+Idle starts: 119.
+From here on, the order of execution is always the same.
+vTask1 is running. Start time: 120
+

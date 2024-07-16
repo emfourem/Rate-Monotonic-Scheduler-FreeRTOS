@@ -1,0 +1,22 @@
+\section{Introduction}
+In this project, the FreeRTOS scheduling mechanism will be analysed and modifications will be made to implement Rate Monotonic (RM) Scheduling. Subsequently, the performance of the original FreeRTOS scheduling will be compared with that of RM Scheduling, evaluating the efficiency in managing task priorities and execution times.
+
+\subsection{What is FreeRTOS}
+FreeRTOS is an independent, small, simple real-time operating system kernel being released freely for the use of microcontroller-based applications. It was developed by Richard Barry in the year 2003; this is a simple, strongly typed, and very light kernel that supports multitasking applications in need of accurate timing. Its features include high portability, unrestricted use of asserts, scalability and supported microcontroller architectures that makes it to be largely used in automotive, industrial automation, and consumer electronics industries. Thus, it can be employed in devices with a limited amount of resources while still supporting intricate functionalities. It is now used by a vast number of people and well-documented which makes FreeRTOS a reliable solution for real-time systems used in the field of embedded systems.
+
+\subsection{FreeRTOS Scheduling}
+The system scheduler employed in FreeRTOS is preemptive priority based whereby a set of tasks with different priorities can effectively be dealt with. The following scheduler ensures that the maximum priority task, that is, the one that is prepared to run is every given CPU time. If, however, there are several tasks with the same priority level, FreeRTOS will allow them to be serviced in a circular basis, to give each of them approximately equal time on the processor. 
+
+\noindent To enhance multitasking, FreeRTOS has other attributes that enable the developers to develop more than one task at a time. Every task under FreeRTOS runs in the form of a thread with stack and the kernel SW is responsible for task swapping. Context switching is a type of operating system scheduling mechanism in which the operating system saves the state of the presently executing task and restores the state of the task set to be executed next. This makes it possible for each of the tasks to continue with the execution from where it was interrupted. 
+
+\noindent FreeRTOS also provides features like semaphores, mutexes and event group which assist in controlling the execution of tasks and controlling access to the resources. Race conditions are thus avoided, and it becomes certain that one task will not intrude with the other when both are accessing vital parts of the code or data. Also, FreeRTOS provides mechanisms for tasks’ interaction through message passing using message queues and stream buffers. 
+
+\noindent In conclusion, it can be stated that the usage of preemptive scheduling algorithm, high quality context switching, numerous synchronization and communication methodologies make FreeRTOS one of the most efficient multitasking kernel for embedded systems.
+
+\subsection{Rate Monotonic (RM) Scheduling}
+Rate Monotonic (RM) Scheduling is a \textbf{fixed-priority algorithm} used in real-time systems. In RM, each task is assigned a static priority at compilation time, which remains constant throughout its execution. The scheduler is \textbf{preemptive}, so it can interrupt the execution of a currently running task to start another one that has a higher priority. In RM:
+    \begin{itemize}
+        \item Shorter period $\rightarrow$ higher priority
+        \item Longer period $\rightarrow$ lower priority
+    \end{itemize}
+This ensures that tasks with more frequent execution requirements are prioritized over those with longer periods.

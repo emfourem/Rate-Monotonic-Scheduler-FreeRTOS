@@ -102,20 +102,20 @@ void main(void)
 	/* Create the task. */
 	xTaskCreate(vTask1,					  /* The function that implements the task. */
 				"Task 1",				  /* The text name assigned to the task - for debug only as it is not used by the kernel. */
-				configMINIMAL_STACK_SIZE, /* The size of the stack to allocate to the task. */
+				configMINIMAL_STACK_SIZE *3, /* The size of the stack to allocate to the task. */
 				(void *)pcText1,		  /* The parameter passed to the task, works in a stack fashion */
 				1,						  /* The priority assigned to the task. */
 				NULL);					  /* The task handle is not required, so NULL is passed. */
 
-	xTaskCreate(vTask2, "Task 2", configMINIMAL_STACK_SIZE, (void *)pcText2, 2, NULL);
+	xTaskCreate(vTask2, "Task 2", configMINIMAL_STACK_SIZE *3, (void *)pcText2, 2, NULL);
 
-	xTaskCreate(vTask3, "Task 3", configMINIMAL_STACK_SIZE, (void *)pcText3, 3, NULL);
+	xTaskCreate(vTask3, "Task 3", configMINIMAL_STACK_SIZE *3, (void *)pcText3, 3, NULL);
 
-	xTaskCreate(vTask1, "Task 4", configMINIMAL_STACK_SIZE, (void *)pcText4, 4, NULL);
+	xTaskCreate(vTask1, "Task 4", configMINIMAL_STACK_SIZE *3, (void *)pcText4, 4, NULL);
 
-	xTaskCreate(vTask2, "Task 5", configMINIMAL_STACK_SIZE, (void *)pcText5, 5, NULL);
+	xTaskCreate(vTask2, "Task 5", configMINIMAL_STACK_SIZE *3, (void *)pcText5, 5, NULL);
 
-	xTaskCreate(vTask3, "Task 6", configMINIMAL_STACK_SIZE, (void *)pcText6, 6, NULL);
+	xTaskCreate(vTask3, "Task 6", configMINIMAL_STACK_SIZE *3, (void *)pcText6, 6, NULL);
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();

@@ -1,0 +1,107 @@
+\section{Development}
+\subsection{Select the new task} \label{sec:2.1}
+The function \texttt{taskSELECT\_TASK\_RM()} is a scheduler function that implements Rate Monotonic (RM) Scheduling used when the switch context occurs. The function is developed as follows:
+\begin{enumerate}
+\item Initialisation of variables:
+\begin{lstlisting}
+UBaseType_t uxTopPriority = uxTopReadyPriority;
+int overallPriority = 100; // Maximum possible initial value
+int tempOverallPriority = 0;
+ListItem_t* highestPriorityBurst = NULL;
+\end{lstlisting}
+\item Get the list of ready tasks with the highest priority (the list with the highest priority containing ready-to-run tasks is found. There will only be one list because all tasks have the same priority):
+\begin{lstlisting}
+portGET_HIGHEST_PRIORITY(uxTopPriority, uxTopReadyPriority);
+configASSERT(listCURRENT_LIST_LENGTH(
+    &(pxReadyTasksLists[uxTopPriority])
+) > 0);
+\end{lstlisting}
+\item Retrieval of the task list with the current priority:
+\begin{lstlisting}
+List_t* pxConstList = &(pxReadyTasksLists[uxTopPriority]);
+\end{lstlisting}
+\item Initialisation of the pointer to the first element of the list:
+\begin{lstlisting}
+ListItem_t* pxListItem = listGET_HEAD_ENTRY(pxConstList);   
+\end{lstlisting}
+\item Cycle to find the task with the shortest period:
+\begin{lstlisting}
+for (UBaseType_t i = 0; i < listCURRENT_LIST_LENGTH(pxConstList); i++) {
+    pxCurrentTCB = (pxListItem)->pvOwner;
+    tempOverallPriority = (pxCurrentTCB)->period;
+    if (tempOverallPriority < overallPriority) {
+        overallPriority = tempOverallPriority;
+        highestPriorityBurst = pxListItem;
+    }
+    pxListItem = (pxListItem)->pxNext; // Moving on to the next element
+}
+\end{lstlisting}
+The loop goes through all the items in the task list with the highest priority, comparing the period of each task. If the period is less than overallPriority, it updates overallPriority and sets highestPriorityBurst to the current item.
+\item Selection of the correct task to perform:
+\begin{lstlisting}
+if (highestPriorityBurst != NULL) {
+    pxCurrentTCB = (highestPriorityBurst)->pvOwner;
+}
+\end{lstlisting}
+If a task with the shortest period was found, this task is selected for execution.
+\end{enumerate}
+
+\subsection{Task creation} \label{sec:2.2}
+The new task must be created using the \texttt{xTaskCreate} function, which now includes two additional parameters: an integer for the task's CPU burst (named \texttt{pxCpuBurst}) time and an integer for the period (named \texttt{period}). Additionally, the task re-creation after the specified period is managed within the task code itself, rather than being handled directly by the OS. This approach is designed to support the main goal of implementing a Rate Monotonic (RM) scheduler instead of managing the periodic tasks.\\
+
+\noindent This block is executed in the function that initialises a task after it has been created (\texttt{prvInitialise
+NewTask}). This conditional code block is only executed if the \texttt{configUSE\_RM} macro is set to 1, which indicates that Monotonic Rate (RM) Scheduling is enabled. The code takes care of setting the values for \texttt{CpuBurst} and \texttt{period} of a new Task Control Block (TCB). First it checks the value of \texttt{pxCpuBurst}: if it is less than 1, it sets \texttt{CpuBurst} to 1, otherwise it sets \texttt{CpuBurst} to the value of \texttt{pxCpuBurst}. Next, it checks the value of \texttt{period}: if it is less than 1, it sets it to 1; if it is greater than 10, it limits it to 10; if it is between 1 and 10 (inclusive), it assigns \texttt{period} the value of \texttt{period}. In this way, the code ensures that the values of \texttt{CpuBurst} and \texttt{period} are always within the specified limits, with \texttt{CpuBurst} at least 1 and \texttt{period} between 1 and 10. The assumption to limit the period to 10 is only for debug purposes and can be easily removed. In addition, the \texttt{period} is expressed in tenths of second. This is developed as follows:
+\begin{lstlisting}
+#if (configUSE_RM == 1)
+if (pxCpuBurst < 1) {
+    pxNewTCB->CpuBurst = 1;
+} else {
+    pxNewTCB->CpuBurst = pxCpuBurst;
+}
+
+if (period < 1) {
+    pxNewTCB->period = 1;
+} else if (period > 10) {
+    pxNewTCB->period = 10;
+} else {
+    pxNewTCB->period = period;
+}
+#endif
+\end{lstlisting}
+
+%\noindent The following block is executed after the task has been created and initialised and must be inserted in the list of tasks ready to execute. This code checks if the scheduler is running. If it is, it compares the period of the current task with that of a new task. If the new task has a shorter period, it forces a yield operation to allow the new task to run.
+%\begin{lstlisting}
+%if (xSchedulerRunning != pdFALSE) {
+    %/* If the created task is of shorter period than the current task then it should run now */
+    %if (pxCurrentTCB->period > pxNewTCB->period) {
+        %taskYIELD_IF_USING_PREEMPTION();
+   % } else {
+        %mtCOVERAGE_TEST_MARKER();
+    %}
+%} else {
+   % mtCOVERAGE_TEST_MARKER();
+%}
+%\end{lstlisting}
+
+\subsection{Starting Scheduler \& Switch Context}
+The following code must be added to the functions \texttt{vTaskStartScheduler} and \texttt{vTaskSwitchContext} in order to use the new function defined in section \ref{sec:2.1} into the scheduler.
+\begin{lstlisting}
+#if (configUSE_RM == 1)
+{
+    taskSELECT_TASK_RM();
+}
+#else
+{
+    taskSELECT_HIGHEST_PRIORITY_TASK();
+}
+#endif
+\end{lstlisting}
+
+\subsection{Define New Macro}
+In the file \texttt{FreeRTOSConfig.h}, a new macro must be added. It will be set to 1 if RM scheduling is selected; otherwise, if set to 0, the default FreeRTOS scheduler will be used.
+\begin{lstlisting}
+#define configUSE_RM 1
+\end{lstlisting}
+
+\subsection{Complementary Change}
+Also in the file \texttt{task.h} and the other complementaries files, the definition of the function \texttt{xTaskCreate} must be modified to include the two new parameters added in \ref{sec:2.2}.

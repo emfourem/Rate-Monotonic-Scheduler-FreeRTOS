@@ -42,7 +42,7 @@
 #define configUSE_TRACE_FACILITY 0
 #define configGENERATE_RUN_TIME_STATS 0
 
-#define configUSE_PRIORITY_BURST 		1
+#define configUSE_RM 		1
 
 #define configUSE_TICKLESS_IDLE         0
 #define configUSE_PREEMPTION			1

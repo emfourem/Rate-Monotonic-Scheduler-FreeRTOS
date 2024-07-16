@@ -1,0 +1,230 @@
+Task 2 is running. Start time: 0
+Task 3 is running. Start time: 0
+Task 1 is running. Start time: 0
+Task 3 finished at time 7.
+Task 2 finished at time 8.
+Task 1 finished at time 8.
+Idle starts: 8.
+Idle starts: 8.
+Idle starts: 8.
+Idle starts: 9.
+Idle starts: 9.
+Idle starts: 10.
+Idle starts: 10.
+Idle starts: 10.
+Idle starts: 11.
+Idle starts: 11.
+Idle starts: 11.
+Idle starts: 11.
+Idle starts: 12.
+Idle starts: 12.
+Idle starts: 12.
+Idle starts: 12.
+Idle starts: 13.
+Idle starts: 13.
+Idle starts: 13.
+Idle starts: 13.
+Idle starts: 14.
+Idle starts: 14.
+Idle starts: 14.
+Idle starts: 15.
+Idle starts: 15.
+Idle starts: 15.
+Idle starts: 15.
+Idle starts: 16.
+Idle starts: 16.
+Idle starts: 16.
+Idle starts: 17.
+Idle starts: 17.
+Idle starts: 17.
+Idle starts: 17.
+Idle starts: 18.
+Idle starts: 18.
+Idle starts: 18.
+Idle starts: 19.
+Idle starts: 19.
+Idle starts: 19.
+Idle starts: 19.
+Task 1 is running. Start time: 20
+Task 1 finished at time 28.
+Idle starts: 28.
+Idle starts: 28.
+Idle starts: 28.
+Idle starts: 29.
+Idle starts: 29.
+Idle starts: 29.
+Task 2 is running. Start time: 30
+Task 2 finished at time 38.
+Idle starts: 38.
+Idle starts: 38.
+Idle starts: 38.
+Idle starts: 38.
+Idle starts: 39.
+Idle starts: 39.
+Idle starts: 39.
+Task 3 is running. Start time: 40
+Task 1 is running. Start time: 40
+Task 3 finished at time 47.
+Task 1 finished at time 48.
+Idle starts: 48.
+Idle starts: 48.
+Idle starts: 48.
+Idle starts: 48.
+Idle starts: 49.
+Idle starts: 49.
+Idle starts: 49.
+Idle starts: 50.
+Idle starts: 50.
+Idle starts: 50.
+Idle starts: 50.
+Idle starts: 51.
+Idle starts: 51.
+Idle starts: 51.
+Idle starts: 52.
+Idle starts: 52.
+Idle starts: 52.
+Idle starts: 52.
+Idle starts: 53.
+Idle starts: 53.
+Idle starts: 53.
+Idle starts: 53.
+Idle starts: 54.
+Idle starts: 54.
+Idle starts: 54.
+Idle starts: 54.
+Idle starts: 55.
+Idle starts: 55.
+Idle starts: 55.
+Idle starts: 56.
+Idle starts: 56.
+Idle starts: 56.
+Idle starts: 56.
+Idle starts: 57.
+Idle starts: 57.
+Idle starts: 57.
+Idle starts: 58.
+Idle starts: 58.
+Idle starts: 58.
+Idle starts: 58.
+Idle starts: 59.
+Idle starts: 59.
+Idle starts: 59.
+Idle starts: 59.
+Task 2 is running. Start time: 60
+Task 1 is running. Start time: 60
+Task 2 finished at time 68.
+Task 1 finished at time 68.
+Idle starts: 68.
+Idle starts: 68.
+Idle starts: 68.
+Idle starts: 68.
+Idle starts: 69.
+Idle starts: 69.
+Idle starts: 69.
+Idle starts: 70.
+Idle starts: 70.
+Idle starts: 70.
+Idle starts: 70.
+Idle starts: 71.
+Idle starts: 71.
+Idle starts: 71.
+Idle starts: 71.
+Idle starts: 72.
+Idle starts: 72.
+Idle starts: 72.
+Idle starts: 73.
+Idle starts: 73.
+Idle starts: 73.
+Idle starts: 73.
+Idle starts: 74.
+Idle starts: 74.
+Idle starts: 74.
+Idle starts: 74.
+Idle starts: 75.
+Idle starts: 75.
+Idle starts: 75.
+Idle starts: 76.
+Idle starts: 76.
+Idle starts: 76.
+Idle starts: 76.
+Idle starts: 77.
+Idle starts: 77.
+Idle starts: 77.
+Idle starts: 78.
+Idle starts: 78.
+Idle starts: 78.
+Idle starts: 78.
+Idle starts: 79.
+Idle starts: 79.
+Idle starts: 79.
+Idle starts: 79.
+Task 3 is running. Start time: 80
+Task 1 is running. Start time: 80
+Task 3 finished at time 87.
+Task 1 finished at time 88.
+Idle starts: 88.
+Idle starts: 88.
+Idle starts: 88.
+Idle starts: 89.
+Idle starts: 89.
+Idle starts: 89.
+Idle starts: 89.
+Task 2 is running. Start time: 90
+Task 2 finished at time 98.
+Idle starts: 98.
+Idle starts: 98.
+Idle starts: 98.
+Idle starts: 99.
+Idle starts: 99.
+Idle starts: 99.
+Idle starts: 99.
+Task 1 is running. Start time: 100
+Task 1 finished at time 108.
+Idle starts: 108.
+Idle starts: 108.
+Idle starts: 108.
+Idle starts: 108.
+Idle starts: 109.
+Idle starts: 109.
+Idle starts: 109.
+Idle starts: 109.
+Idle starts: 110.
+Idle starts: 110.
+Idle starts: 110.
+Idle starts: 110.
+Idle starts: 111.
+Idle starts: 111.
+Idle starts: 111.
+Idle starts: 111.
+Idle starts: 112.
+Idle starts: 112.
+Idle starts: 112.
+Idle starts: 113.
+Idle starts: 113.
+Idle starts: 113.
+Idle starts: 113.
+Idle starts: 114.
+Idle starts: 114.
+Idle starts: 114.
+Idle starts: 115.
+Idle starts: 115.
+Idle starts: 115.
+Idle starts: 115.
+Idle starts: 116.
+Idle starts: 116.
+Idle starts: 116.
+Idle starts: 116.
+Idle starts: 117.
+Idle starts: 117.
+Idle starts: 117.
+Idle starts: 117.
+Idle starts: 118.
+Idle starts: 118.
+Idle starts: 118.
+Idle starts: 119.
+Idle starts: 119.
+Idle starts: 119.
+Idle starts: 119.
+Task 3 is running. Start time: 120
+Task 2 is running. Start time: 120
+Task 1 is running. Start time: 120

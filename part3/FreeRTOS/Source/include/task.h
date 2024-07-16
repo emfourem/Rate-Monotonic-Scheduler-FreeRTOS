@@ -267,8 +267,8 @@ typedef enum
  *                            void *pvParameters,
  *                            UBaseType_t uxPriority,
  *                            TaskHandle_t *pxCreatedTask,
- *                            int pxCpuBurst
- *                        );
+ *                            int pxCpuBurst,
+ *                            int period);
  * @endcode
  *
  * Create a new task and add it to the list of tasks that are ready to run.
@@ -315,6 +315,10 @@ typedef enum
  * @param pxCreatedTask Used to pass back a handle by which the created task
  * can be referenced.
  *
+ * @param pxCpuBurst The time of CPU needed by the task.
+ *
+ * @param period The period of a task after which a new task arrives.
+ *
  * @return pdPASS if the task was successfully created and added to a ready
  * list, otherwise an error code defined in the file projdefs.h
  *
@@ -339,7 +343,7 @@ typedef enum
  *   // must exist for the lifetime of the task, so in this case is declared static.  If it was just an
  *   // an automatic stack variable it might no longer exist, or at least have been corrupted, by the time
  *   // the new task attempts to access it.
- *   xTaskCreate( vTaskCode, "NAME", STACK_SIZE, &ucParameterToPass, tskIDLE_PRIORITY, &xHandle );
+ *   xTaskCreate( vTaskCode, "NAME", STACK_SIZE, &ucParameterToPass, tskIDLE_PRIORITY, &xHandle, 1, 1 );
  *   configASSERT( xHandle );
  *
  *   // Use the handle to delete the task.

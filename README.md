@@ -1,4 +1,5 @@
-#Instructions for building a demo
+# Instructions for building a demo
+
 1. **Install Visual Studio Code**: [VSCode](https://code.visualstudio.com/download)
    - Download the VSCode version for **Windows (x64)**.
    - Manually run the installation file (.exe) if it does not start automatically.

@@ -28,8 +28,8 @@
  * See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
  * instructions.
  *
- * In this demo, 3 tasks are created with the same priority.
- * They run "simultaneously" due to the Round Robin used by FreeRTOS.
+ * In this demo, 6 tasks are created and executed for a specific amount of time periodically without releasing the CPU.
+ * All the tasks have the same priority to show how tasks will run and to compare results with rate monotic scheduling algorithm.
  *
  * Running in QEMU:
  * Use the following commands to start the application running in a way that
@@ -78,7 +78,6 @@ static void vTask2(void *pvParameters);
 static void vTask3(void *pvParameters);
 
 /*-----------------------------------------------------------*/
-
 
 void main(void)
 {
@@ -139,9 +138,7 @@ void vTask1(void *pvParameters)
 		// Busy-wait for one second (tick count equivalent to one second)
 		while ((xTaskGetTickCount() - xStartTick) < xOneSecondTicks)
 		{
-			// Ensure the task does not yield the CPU during this period
-			// (This loop will keep running until one second has passed)
-			// Introduce a small delay to avoid continuous busy-waiting
+			
 		}
 
 		// One second has passed, increment timeSpent

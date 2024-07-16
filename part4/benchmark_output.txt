@@ -1,0 +1,9 @@
+Rate Monotonic Scheduling Metrics:
+Total Execution Time: 120
+Idle Time Percentage: 15.83%
+Context Switches: 14
+Standard Scheduling Metrics:
+Total Execution Time: 120
+Idle Time Percentage: 46.67%
+Context Switches: 16
+

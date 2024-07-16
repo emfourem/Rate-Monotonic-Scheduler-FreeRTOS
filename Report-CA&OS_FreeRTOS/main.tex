@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{anyfontsize}
+\usepackage{colortbl}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hhline}
+\usepackage{hyperref}
+\usepackage{ragged2e}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage{fontawesome}
+\usepackage{soul}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage{tocloft}
+\usepackage{pifont}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{url}
+
+\lstset{ 
+  language=C,
+  basicstyle=\ttfamily,
+  keywordstyle=\color{blue!90!black},
+  stringstyle=\color{red!80!black},
+  commentstyle=\color{green!60!black},
+  morecomment=[l][\color{purple!80!black}]{\#},
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  backgroundcolor=\color{gray!5},
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true
+}
+
+% Header setup
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}  % Section title on the left
+\fancyhead[R]{\thepage}   % Page number on the right
+
+\definecolor{PrussianBlue}{RGB}{0,43,73}
+\definecolor{LightBlue}{RGB}{230,255,255}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \includegraphics[width=0.75\textwidth]{img/logo.png}\par
+    \vspace{0.5cm}
+    {\scshape\Huge FreeRTOS: Rate Monotonic Scheduling \par}
+    \vspace{1cm}
+    {\scshape\LARGE Computer Architectures and Operating Systems Project (Track 1.2: HaclOSsim) \par}
+    \vspace{2cm}
+    \begin{tabularx}{\textwidth}{Xr}
+        \begin{minipage}[t]{0.45\textwidth}
+            \raggedright
+            {\Large Authors: \\ Merico Michele \\ Marino Alberto \\ Maniero Edoardo \\ Seidita Nicola \par}
+        \end{minipage} &
+        \begin{minipage}[t]{0.45\textwidth}
+            \raggedleft
+            {\Large  \par}
+        \end{minipage}
+    \end{tabularx}
+    \vfill
+    \hrule height 0.5pt
+    \vspace{0.5cm}
+    {\Large Academic Year 2023/2024 \par}
+\end{titlepage}
+
+% Include chapter files
+\input{chapters/chapter01}
+\input{chapters/chapter02}
+\input{chapters/chapter03}
+\input{chapters/chapter04}
+
+\end{document} % End of the document

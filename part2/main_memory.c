@@ -28,8 +28,9 @@
  * See https://www.freertos.org/freertos-on-qemu-mps2-an385-model.html for
  * instructions.
  *
- * In this demo, 6 tasks are created with different stack sizes and using printouts,
- * the dynamic allocation and release of memory in the heap size is shown.
+ * In this demo, 3 tasks are created with different stack sizes.
+ * Using a print function, the demo will show the heap size before and after
+ * each creation and before and after each deletion.
  *  
  * Running in QEMU:
  * Use the following commands to start the application running in a way that

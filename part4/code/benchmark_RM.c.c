@@ -121,11 +121,17 @@ static void prvUARTInit(void);
 /*********************************************************************************************************
  *										  APPLICATION GLOBALS
  *********************************************************************************************************/
-
-
+/* For tasks, a task handle is essentially a reference to a specific task.
+	For example after the task creation, you can use the task's handle to delete the task (vTaskDelete(xHandle)). */
 TaskHandle_t xHandle_1 = NULL;
 TaskHandle_t xHandle_2 = NULL;
 TaskHandle_t xHandle_3 = NULL;
+
+/* Define the strings that will be passed as the task parameters.
+	These are defined as const and not on the stack to ensure they remain valid when the tasks are executing. */
+// static const char *paramTask1 = "Task 1 is running";
+// static const char *paramTask2 = "Task 2 is running";
+// static const char *paramTask3 = "Task 3 is running";
 
 /* Timer required. */
 

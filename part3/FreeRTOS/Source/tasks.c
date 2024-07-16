@@ -170,7 +170,18 @@
 
 /*-----------------------------------------------------------*/
 
-#define taskSELECT_TASK_RM()                                                         \
+
+#define taskSELECT_HIGHEST_PRIORITY_TASK()                                                  \
+{                                                                                           \
+    UBaseType_t uxTopPriority;                                                              \
+                                                                                            \
+    /* Find the highest priority list that contains ready tasks. */                         \
+    portGET_HIGHEST_PRIORITY( uxTopPriority, uxTopReadyPriority );                          \
+    configASSERT( listCURRENT_LIST_LENGTH( &( pxReadyTasksLists[ uxTopPriority ] ) ) > 0 ); \
+    listGET_OWNER_OF_NEXT_ENTRY( pxCurrentTCB, &( pxReadyTasksLists[ uxTopPriority ] ) );   \
+} /* taskSELECT_HIGHEST_PRIORITY_TASK() */
+
+#define taskSELECT_TASK_RM()                                                                    \
     {                                                                                           \
     UBaseType_t uxTopPriority = uxTopReadyPriority;                                             \
     int overallPriority = 100;       /* Initialize to the maximum value possible. */            \
@@ -345,10 +356,10 @@ typedef struct tskTaskControlBlock       /* The old naming convention is used to
         int iTaskErrno;
     #endif
 
-    #if ( configUSE_PRIORITY_BURST == 1 )
-        int CpuBurst;
-        int period;
-    #endif
+    
+    int CpuBurst;
+    int period;
+
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -918,21 +929,20 @@ static void prvInitialiseNewTask( TaskFunction_t pxTaskCode,
     }
     #endif /* portSTACK_GROWTH */
 
-    #if (configUSE_PRIORITY_BURST == 1)
-        if(pxCpuBurst < 1){
-            pxNewTCB->CpuBurst = 1;
-        }else{
-            pxNewTCB->CpuBurst = pxCpuBurst;
-        }
+    if(pxCpuBurst < 1){
+        pxNewTCB->CpuBurst = 1;
+    }else{
+        pxNewTCB->CpuBurst = pxCpuBurst;
+    }
 
-        if(period < 1){
-            pxNewTCB->period = 1;
-        }else if(period > 10){
-            pxNewTCB->period = 10;
-        }else{
-           pxNewTCB->period = period; 
-        }
-    #endif
+    if(period < 1){
+        pxNewTCB->period = 1;
+    }else if(period > 10){
+        pxNewTCB->period = 10;
+    }else{
+       pxNewTCB->period = period; 
+    }
+
 
     /* Store the task name in the TCB. */
     if( pcName != NULL )
@@ -1141,7 +1151,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 
     if( xSchedulerRunning != pdFALSE )
     {
-        /* If the created task is of a higher priority than the current task
+        /* If the created task is of shorter period than the current task
          * then it should run now. */
         if( pxCurrentTCB->period > pxNewTCB->period )
         {
@@ -1492,8 +1502,6 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 #endif /* INCLUDE_eTaskGetState */
 /*-----------------------------------------------------------*/
 
-#if (configUSE_PRIORITY_BURST == 1)
-
 int uxTaskCpuBurstGet( const TaskHandle_t xTask )
     {
         TCB_t const * pxTCB;
@@ -1545,7 +1553,6 @@ const char* uxTaskNameGet( const TaskHandle_t xTask )
         return uxReturn;
     }
 
-#endif
 
 #if ( INCLUDE_uxTaskPriorityGet == 1 )
 
@@ -2154,7 +2161,7 @@ void vTaskStartScheduler( void )
          * FreeRTOSConfig.h file. */
         portCONFIGURE_TIMER_FOR_RUN_TIME_STATS();
 
-        #if (configUSE_PRIORITY_BURST == 1)
+        #if (configUSE_RM == 1)
         {
             taskSELECT_TASK_RM();
         }
@@ -3176,7 +3183,7 @@ void vTaskSwitchContext( void )
         }
         #endif
 
-        #if (configUSE_PRIORITY_BURST == 1)
+        #if (configUSE_RM == 1)
             taskSELECT_TASK_RM();
         #else
             /* Select a new task to run using either the generic C or port
